@@ -1,3 +1,5 @@
 // Type definitions for Next.js root params (next/root-params)
-// No root params detected.
-export {}
+
+declare module 'next/root-params' {
+  export function locale(): Promise<string>
+}

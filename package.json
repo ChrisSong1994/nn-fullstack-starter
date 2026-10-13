@@ -1,0 +1,23 @@
+{
+  "name": "nn-fullstack-starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "nextjs + nestjs 全栈 saas 项目启动模版",
+  "packageManager": "pnpm@11.5.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @nnfs/shared build && pnpm -r --parallel dev",
+    "dev:shared": "pnpm --filter @nnfs/shared dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "dev:server": "pnpm --filter @nnfs/server dev",
+    "dev:website": "pnpm --filter @nnfs/website dev",
+    "db:generate": "pnpm --filter @nnfs/server db:generate",
+    "db:migrate": "pnpm --filter @nnfs/server db:migrate",
+    "db:seed": "pnpm --filter @nnfs/server db:seed",
+    "db:studio": "pnpm --filter @nnfs/server db:studio"
+  }
+}

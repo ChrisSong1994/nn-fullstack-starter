@@ -1,0 +1,27 @@
+packages:
+  - website
+  - server
+  - packages/*
+
+# pnpm 11 默认不执行依赖的构建脚本，这里显式放行必需的几个。
+allowBuilds:
+  # Prisma CLI 与查询引擎，必需。
+  prisma: true
+  '@prisma/engines': true
+  # vitest / nest 的转换器链路。
+  esbuild: true
+  '@swc/core': true
+  # next dev 的文件监听；没有它 next 会退回轮询。
+  '@parcel/watcher': true
+  # bullmq 的 msgpack 原生加速是可选的，用不到就走 JS 实现。
+  msgpackr-extract: false
+  # 纯统计上报，不装。
+  '@scarf/scarf': false
+  sharp: false
+  unrs-resolver: false
+
+# 这几个包刚发布不久，pnpm 的 minimumReleaseAge 会拦下它们；这里显式放行。
+minimumReleaseAgeExclude:
+  - antd@6.6.6
+  - bullmq@6.3.13
+  - zod@4.6.6

@@ -26,6 +26,12 @@
     "language": "Language",
     "swagger": "API docs"
   },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "home": {
     "title": "The full-stack template is ready",
     "subtitle": "Complete auth loop: sign up / sign in / email verification / password reset + role-based access control",

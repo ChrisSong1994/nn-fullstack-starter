@@ -1,0 +1,41 @@
+{
+  // NestJS 后端（server/）的调试配置。
+  //
+  // 后端不是直接 `node main.js` 起来的：`nest start` 会先做一次 tsc 构建，再 spawn 一个
+  // node 子进程去跑 `dist/main.js`（见 @nestjs/cli 的 actions/start.action.js）。所以：
+  //   - 启动式调试必须开 autoAttachChildProcesses，否则调试器停在 CLI 那层，断点不命中；
+  //   - cwd 必须是 server/ —— nest-cli.json、tsconfig.build.json 与 .env 都按它解析。
+  // 加断点后走「后端：启动并调试」，改代码由 nest 的 watch 自动重启并重新挂上调试器。
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "后端：启动并调试（watch，5050）",
+      "type": "node",
+      "request": "launch",
+      // pnpm run start:debug = nest start --debug --watch（--debug 即给子进程加 --inspect）。
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug"],
+      "cwd": "${workspaceFolder}/server",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      // 断点所在的 src/*.ts 要能映射回来，得知道产物在哪。
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      // 适用于「终端里已经跑着 pnpm dev / start:debug，只想临时挂个调试器」。
+      // 前端在 5055，后端在 5050，两个终端 + 这个 attach 是日常开发最省事的一套。
+      "name": "后端：附加到已运行的 9229",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "cwd": "${workspaceFolder}/server",
+      // nest 的 watch 每次重建都会重启子进程，restart 让调试器自动重新挂上。
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

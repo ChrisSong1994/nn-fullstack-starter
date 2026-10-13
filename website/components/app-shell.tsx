@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * 全站外壳：顶部导航 + 用户菜单 + 语言切换。
+ * 全站外壳：顶部导航 + 主题/语言切换 + 用户菜单。
  *
  * 菜单项按权限点过滤（`can` / `canAny`），后端同样会拦 —— 这里只解决「看不见」的问题。
  */
@@ -10,6 +10,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { PERMISSIONS, type PermissionCode } from '@nnfs/shared';
 
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { authClient } from '@/lib/auth-client';
@@ -80,7 +81,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <Layout className="min-h-screen">
-      <Header className="flex items-center gap-6 bg-white! px-6 shadow-sm!">
+      {/* 底色（含深色）由 antd 的 Layout.headerBg 给，见 components/antd-provider.tsx。 */}
+      <Header className="flex items-center gap-6 px-6 shadow-sm!">
         <Link href="/" className="text-lg font-semibold whitespace-nowrap">
           {t('common.appName')}
         </Link>
@@ -94,9 +96,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Segmented
             size="small"
             value={locale}
+            aria-label={t('nav.language')}
             options={routing.locales.map((item) => ({ label: item.toUpperCase(), value: item }))}
             onChange={(value) => router.replace(pathname, { locale: value as string })}
           />
+          <ThemeToggle />
           {loaded && user ? (
             <Dropdown
               menu={{

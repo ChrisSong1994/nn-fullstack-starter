@@ -26,6 +26,12 @@
     "language": "语言",
     "swagger": "接口文档"
   },
+  "theme": {
+    "label": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统"
+  },
   "home": {
     "title": "全栈模板已就绪",
     "subtitle": "认证闭环：注册 / 登录 / 邮箱验证 / 找回密码 + 角色权限（RBAC）",

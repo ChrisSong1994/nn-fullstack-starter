@@ -88,6 +88,7 @@ website/
 
 - **路由是 Next 自带的 App Router**（`app/[locale]/…`），没有 react-router；导航用 next-intl 的 `createNavigation` 导出的 `Link` / `useRouter`，不要用 `next/link` 的裸版本。
 - **语言前缀恒存在**（`localePrefix: 'always'`，zh 默认）。新增页面文案要同时写 `messages/zh.json` 与 `messages/en.json`。
+- **服务端取语言只走 `next/root-params`**（在 `i18n/request.ts` 里读一次）。不要引入 `setRequestLocale` / `requestLocale` —— 前者在 next-intl 4.14 已废弃，后者离开它就取不到值。
 - **浏览器不直连后端**：`/api/*` 由 `next.config.ts` 的 `rewrites` 同源转发到 `BACKEND_URL`，这样会话 Cookie 是第一方 Cookie。改后端地址只改 `BACKEND_URL`，不要改成直连 + CORS。
 - 取会话分两层：`proxy.ts` 只做 Cookie 存在性的乐观跳转；**权威校验在 `lib/server-session.ts`**（`getCurrentUser` / `requirePermissions`），它把 Cookie 转给后端 `/api/me`，不重复实现鉴权。页面里先鉴权、再请求数据。
 - **antd 组件只能在 `'use client'` 文件里使用**；服务端组件用 `lib/server-session.ts`，客户端状态用 `stores/session-store.ts`（它只是渲染缓存，`can()` 仅供按钮显隐，**不是安全边界**）。
@@ -99,6 +100,11 @@ website/
 - 改 shared 后忘记 build，会出现「类型明明改对了却报旧类型」的假象 —— 先 `pnpm --filter @nnfs/shared build` 再排查。
 - 不发邮件（`SMTP_HOST` 留空）时，验证/重置链接打印在后端日志里，别去翻邮件。
 - `Dockerfile`、`nginx.conf` 目前是空占位文件，部署链路还没接。
+- 后端调试配置在 `.vscode/launch.json`：`nest start` 会 spawn 子进程跑 `dist/main.js`，所以启动式调试必须开 `autoAttachChildProcesses`、且 `cwd` 指向 `server/`（`nest-cli.json`、`tsconfig.build.json`、`.env` 都按它解析）。别把它改成直接跑 `node dist/main.js`。
+
+## 测试
+- server 里面每个功能都要实现单元测试，集成测试
+- website 里面不要端到端测试，需要针对重要核心功能进行单元测试
 
 ## 文档与 Git
 

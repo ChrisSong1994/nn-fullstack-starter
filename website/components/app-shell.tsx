@@ -30,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: '/dashboard', labelKey: 'nav.dashboard' },
   { key: '/admin/users', labelKey: 'nav.users', anyOf: [PERMISSIONS.USER_READ] },
   { key: '/admin/roles', labelKey: 'nav.roles', anyOf: [PERMISSIONS.ROLE_READ] },
+  { key: '/admin/logs', labelKey: 'nav.logs', anyOf: [PERMISSIONS.LOG_READ] },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {

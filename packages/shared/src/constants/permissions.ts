@@ -20,15 +20,18 @@ export const PERMISSIONS = {
 
   SESSION_READ: 'session:read',
   SESSION_REVOKE: 'session:revoke',
+
+  LOG_READ: 'log:read',
+  LOG_CLEAR: 'log:clear',
 } as const;
 
 export type PermissionCode = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
 /** 资源名（code 的冒号前半段），用于 better-auth 的 access control statement 结构。 */
-export type PermissionResource = 'user' | 'role' | 'permission' | 'session';
+export type PermissionResource = 'user' | 'role' | 'permission' | 'session' | 'log';
 
 /** 动作名（code 的冒号后半段）。 */
-export type PermissionAction = 'read' | 'create' | 'update' | 'delete' | 'assign' | 'revoke';
+export type PermissionAction = 'read' | 'create' | 'update' | 'delete' | 'assign' | 'revoke' | 'clear';
 
 export interface PermissionDefinition {
   code: PermissionCode;
@@ -61,6 +64,9 @@ const PERMISSION_META: Record<PermissionCode, PermissionMeta> = {
 
   [PERMISSIONS.SESSION_READ]: { resource: 'session', action: 'read', group: '会话安全', description: '查看用户会话' },
   [PERMISSIONS.SESSION_REVOKE]: { resource: 'session', action: 'revoke', group: '会话安全', description: '强制下线用户会话' },
+
+  [PERMISSIONS.LOG_READ]: { resource: 'log', action: 'read', group: '系统日志', description: '查看服务端日志' },
+  [PERMISSIONS.LOG_CLEAR]: { resource: 'log', action: 'clear', group: '系统日志', description: '清空服务端日志' },
 };
 
 /** 权限点目录（顺序与 PERMISSION_META 的声明顺序一致）。 */
@@ -114,6 +120,9 @@ export interface RoleDefinition {
 /**
  * 预置角色：`super_admin` 全量；`admin` 能管用户与分配角色，但删用户、增删改角色不放给它；
  * `user` 是注册后的默认角色，没有任何管理权限（只有自己的 /api/me）。
+ *
+ * 日志：`admin` 能看（排查问题要靠它），但**不能清空** —— 清日志不可逆且和审计相关，
+ * 只留给 `super_admin`。
  */
 export const DEFAULT_ROLES: readonly RoleDefinition[] = [
   {
@@ -137,6 +146,7 @@ export const DEFAULT_ROLES: readonly RoleDefinition[] = [
       PERMISSIONS.PERMISSION_READ,
       PERMISSIONS.SESSION_READ,
       PERMISSIONS.SESSION_REVOKE,
+      PERMISSIONS.LOG_READ,
     ],
   },
   {
